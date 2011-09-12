@@ -91,6 +91,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 		</cfscript>
 	</cffunction>
 
+	<!--- this should only be used for dev --->
+	<cffunction name="onError" output="true">
+		<cfdump var="#arguments#" label="arguments" />
+		<cfdump var="#request#" label="request" />
+		<cfabort />
+	</cffunction>
+
 	<!--- ********************** HELPERS / Mura-specific *************************** --->
 	<cffunction name="secureRequest" output="false">
 		<cfif isAdminRequest() and not ( isDefined('session.mura') and listFindNoCase(session.mura.memberships,'S2') )>
@@ -120,5 +127,23 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 		<cfinclude template="fw1config.cfm" />
 		<cfreturn framework />
 	</cffunction>
+
+	
+	<cffunction name="buildURL" access="public" output="false" hint="Appends compatDisplay to query string if the current template is in compactDisplay mode.">
+		<cfargument name="action" type="string" />
+		<cfargument name="path" type="string" default="#variables.framework.baseURL#" />
+		<cfargument name="queryString" type="string" default="" />
+		
+		<cfif StructKeyExists(request.context, "compactDisplay") 
+			and IsBoolean(request.context.compactDisplay)
+			and not REFindNoCase('&?compactDisplay=[true|false]',arguments.action)
+			and not REFindNoCase('&?compactDisplay=[true|false]',arguments.queryString)>
+			<cfset arguments.queryString = ListAppend(arguments.queryString,"compactDisplay=#request.context.compactDisplay#","&") />
+		</cfif>
+		
+		<cfreturn super.buildURL(argumentCollection=arguments)/>
+		
+	</cffunction>
+	
 
 </cfcomponent>
