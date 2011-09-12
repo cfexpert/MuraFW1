@@ -36,12 +36,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 			if ( StructKeyExists(rc, '$') ) {
 				$ = rc.$;
 			};
-			
-<<<<<<< HEAD
+
 			if ( not variables.fw.isFrontEndRequest() ) {
-=======
-			if ( not variables.fw.isFrontEndRequest ) {
->>>>>>> steve/master
 				fw.redirect(action='admin:main.default');
 			};
 		};
