@@ -1,7 +1,7 @@
 <cfsilent>
 <!---
 
-This file is part of muraFW1
+This file is part of MuraFW1
 (c) Stephen J. Withington, Jr. | www.stephenwithington.com
 
 This program is free software; you can redistribute it and/or modify
@@ -18,9 +18,26 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-		Document:	/public/views/main/another.cfm
-		Author:		Steve Withington | www.stephenwithington.com
+	NOTES:
 
 --->
 </cfsilent>
-<p>Cool! You're viewing 'another' page via the 'Public' view.</p>
+<cfoutput>
+	<div style="padding:1em 0; margin:2em 0;">
+		<div>
+			<p>
+				<a href="#buildURL('app2:main')#">Public Main</a> 
+				| <a href="#buildURL('app2:main.another')#">Another Page</a> 
+				| <a href="#buildURL('app2:list')#">List Something</a>
+			</p>
+		</div>
+		<div>
+			#body#
+		</div>
+		<cfif $.currentUser().isSuperUser()>
+			<div class="clearfix">
+				<a href="#rc.$.globalConfig('context')#/plugins/#rc.pc.getDirectory()#/index.cfm?MuraFW1Action=admin:main.default&compactDisplay=true" rel="shadowbox;">Admin</a>
+			</div>
+		</cfif>
+	</div>
+</cfoutput>

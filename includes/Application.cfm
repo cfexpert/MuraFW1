@@ -1,6 +1,7 @@
-<!---
+<cfscript>
+/*
 
-This file is part of muraFW1
+This file is part of MuraFW1
 (c) Stephen J. Withington, Jr. | www.stephenwithington.com
 
 This program is free software; you can redistribute it and/or modify
@@ -17,16 +18,9 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-		Document:	/public/controllers/main.cfc
-		Author:		Steve Withington | www.stephenwithington.com
+	NOTES:
 
---->
-<cfcomponent extends="controller" output="false">
-
-	<!--- ********************************* PAGES ******************************************* --->
-
-	<cffunction name="default" output="false" returntype="any">
-		<cfargument name="rc" required="true" />
-	</cffunction>
-
-</cfcomponent>
+*/
+WriteOutput('Access Denied');
+abort;
+</cfscript>

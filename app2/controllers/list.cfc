@@ -1,5 +1,4 @@
-<cfsilent>
-<!---
+/*
 
 This file is part of MuraFW1
 (c) Stephen J. Withington, Jr. | www.stephenwithington.com
@@ -20,30 +19,17 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 	NOTES:
 
---->
-	<cfscript>
-		request.layout = false;
-	</cfscript>
-	<cfsavecontent variable="local.errors">
-		<cfif StructKeyExists(rc, 'errors') and IsArray(rc.errors) and ArrayLen(rc.errors)>
-			<div class="alert alert-error error">
-				<h2>Alert!</h2>
-				<h3>Please note the following message<cfif ArrayLen(rc.errors) gt 1>s</cfif>:</h3>
-				<ul>
-					<cfloop from="1" to="#ArrayLen(rc.errors)#" index="local.e">
-						<li>
-							<cfif isSimpleValue(rc.errors[local.e])>
-								<cfoutput>#rc.errors[local.e]#</cfoutput>
-							<cfelse>
-								<cfdump var="#rc.errors[local.e]#" />
-							</cfif>
-						</li>
-					</cfloop>
-				</ul>
-			</div><!--- /.alert --->
-		</cfif>
-	</cfsavecontent>
-</cfsilent>
-<cfoutput>
-	#local.errors#
-</cfoutput>
+*/
+component persistent="false" accessors="true" extends="controller" output="false" {
+
+	// ********************************* PAGES *******************************************
+
+	public any function default(required struct rc) {
+
+		// These essentially return the same values
+		//rc.something = 'Matt Levine,Sean Schroeder,Steve Withington,Grant Sherpert,Eddie Ballisty';
+		variables.fw.service('myServices.getDeveloperList', 'something');
+
+	}
+
+}

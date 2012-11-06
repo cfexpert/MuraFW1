@@ -22,28 +22,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 --->
 	<cfscript>
-		request.layout = false;
+		request.layout = true;
 	</cfscript>
-	<cfsavecontent variable="local.errors">
-		<cfif StructKeyExists(rc, 'errors') and IsArray(rc.errors) and ArrayLen(rc.errors)>
-			<div class="alert alert-error error">
-				<h2>Alert!</h2>
-				<h3>Please note the following message<cfif ArrayLen(rc.errors) gt 1>s</cfif>:</h3>
-				<ul>
-					<cfloop from="1" to="#ArrayLen(rc.errors)#" index="local.e">
-						<li>
-							<cfif isSimpleValue(rc.errors[local.e])>
-								<cfoutput>#rc.errors[local.e]#</cfoutput>
-							<cfelse>
-								<cfdump var="#rc.errors[local.e]#" />
-							</cfif>
-						</li>
-					</cfloop>
-				</ul>
-			</div><!--- /.alert --->
-		</cfif>
-	</cfsavecontent>
 </cfsilent>
 <cfoutput>
-	#local.errors#
+	<h3>Another Page</h3>
+	<p>Cool! You're viewing another page via the 'App2' view.</p>
 </cfoutput>

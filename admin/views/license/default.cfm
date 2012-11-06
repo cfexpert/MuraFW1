@@ -1,7 +1,7 @@
 <cfsilent>
 <!---
 
-This file is part of muraFW1
+This file is part of MuraFW1
 (c) Stephen J. Withington, Jr. | www.stephenwithington.com
 
 This program is free software; you can redistribute it and/or modify
@@ -18,11 +18,11 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-		Document:	/admin/views/license/default.cfm
-		Author:		Steve Withington | www.stephenwithington.com
+	NOTES:
 
 --->
 </cfsilent>
-<cfoutput><div class="fw1AdminContent">
+<cfoutput>
+	<h2>License</h2>
 	<cfinclude template="../../../plugin/license.cfm" />
-</div></cfoutput>
+</cfoutput>

@@ -1,7 +1,7 @@
 <cfsilent>
 <!---
 
-This file is part of muraFW1
+This file is part of MuraFW1
 (c) Stephen J. Withington, Jr. | www.stephenwithington.com
 
 This program is free software; you can redistribute it and/or modify
@@ -18,24 +18,18 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-		Document:	/public/layouts/default.cfm
-		Author:		Steve Withington | www.stephenwithington.com
+	NOTES:
 
 --->
 	<cfscript>
-		//request.layout = false;
+		request.layout = true;
 	</cfscript>
 </cfsilent>
 <cfoutput>
-	<div class="clearfix">
-		<p><a href="#buildURL( 'public:main' )#">Public Main</a> | <a href="#buildURL( 'public:main.another' )#">Another Page</a></p>
+	<h3>App2 Main</h3>
+	<p>Hello there! Welcome to the <strong>app2:main.default</strong> view.</p>
+	<div class="notice">
+		<p>Here's something from the public services:<br>
+		<strong>rc.thisIsJustSomeRCVariable = #rc.thisIsJustSomeRCVariable#</strong></p>
 	</div>
-	<div class="clearfix">
-		#body#
-	</div>
-	<cfif $.currentUser().isSuperUser()>
-		<div class="clearfix">
-			<a href="#rc.$.globalConfig('context')#/plugins/#rc.pc.getDirectory()#/index.cfm?action=admin:main.default&compactDisplay=true" rel="shadowbox;width=1100;">Admin</a>
-		</div>
-	</cfif>
 </cfoutput>

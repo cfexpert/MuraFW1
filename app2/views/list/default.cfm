@@ -1,7 +1,7 @@
 <cfsilent>
 <!---
 
-This file is part of muraFW1
+This file is part of MuraFW1
 (c) Stephen J. Withington, Jr. | www.stephenwithington.com
 
 This program is free software; you can redistribute it and/or modify
@@ -18,14 +18,36 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-		Document:	/admin/views/main/error.cfm
-		Author:		Steve Withington | www.stephenwithington.com
+	NOTES:
 
 --->
+	<cfscript>
+		request.layout = true;
+	</cfscript>
 </cfsilent>
 <cfoutput>
-	<div class="error">
-		<h4>An Error Has Occurred!</h4>
-		<!---<cfdump var="#rc.errors#" label="rc.ERRORS" />--->
+	<h3>List Something</h3>
+	<div class="success">
+		<h5>A Few Team Mura Developers:</h5>
+		<ul>
+			<cfloop list="#rc.something#" index="i">
+				<li>#HTMLEditFormat(i)#</li>
+			</cfloop>
+		</ul>
+	</div>
+
+	<!--- Some form testing --->
+	<div>
+		<form method="post">
+			<label for="action">Action</label>
+			<!--- NOTE the 'name' attribute! --->
+			<select id="action" name="MuraFW1Action">
+				<cfset local.actions = 'app2:main.default,app2:main.another,app2:list.default'>
+				<cfloop list="#local.actions#" index="local.i">
+					<option value="#local.i#"<cfif rc.action eq local.i> selected="selected"</cfif>>#local.i#</option>
+				</cfloop>
+			</select>
+			<input type="submit" value="Submit" />
+		</form>
 	</div>
 </cfoutput>
