@@ -21,9 +21,24 @@ limitations under the License.
 --->
 	<cfscript>
 		//request.layout = false;
+		local.registration = rc.registration;
 	</cfscript>
 </cfsilent>
 <cfoutput>
-	<h3>Application ##1</h3>
-	<p>Hello from MuraFW1! Welcome to the <strong>public:main.default</strong> view.</p>
+	<h4>Add Registration</h4>
+	<form method="post">
+		<div class="field">
+			<label for="fname">First Name</label>
+			<input type="text" name="fname" value="#HTMLEditFormat(local.registration.getFName())#" />
+		</div>
+		<div class="field">
+			<label for="lname">Last Name</label>
+			<input type="text" name="lname" value="#HTMLEditFormat(local.registration.getLName())#" />
+		</div>
+		<input type="hidden" name="#variables.framework.action#" value="#getFullyQualifiedAction('app3:main.save')#" />
+		<input type="hidden" name="id" value="#local.registration.getID()#" />
+		<div class="control">
+			<input type="submit" value="Save Registration" />
+		</div>
+	</form>
 </cfoutput>

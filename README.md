@@ -9,7 +9,7 @@ Framework One, or more commonly known as FW/1.
 
 
 ## PLEASE READ
-**This version (3.0) is still in development and has not been fully tested.** 
+**As of version 3.010, this project is licensed under Apache License, Version 2.0**
 
 ### Minimum Requirements
 	* Mura CMS v.6.0+
@@ -25,7 +25,12 @@ two primary subsystems at play here. One is 'admin' and the
 other is 'public'. This means your URLs will have either 
 '?{packageName}Action=admin:your.view' or 
 '?{packageName}Action=public:your.view' (e.g., 
-?MuraFW1action=admin:default.main)
+?MuraFW1action=admin:default.main). There are also some
+additional example applications inlcuded (e.g., app2, app3, etc.).
+These are included to give you, the developer, a kind of
+'skeleton' application to work with. In addition, this also
+illustrates how one would create multiple display objects for
+Mura CMS.
 
 Next, here are some of the more important files to be aware of 
 and a little bit about what they are.
@@ -76,6 +81,16 @@ should be able to add any display methods here.  Just be sure sure
 to map them into your `config.xml.cfm` file so they'll show up for 
 content managers.
 
+### /includes/factory/ioc.cfc
+This file is DI/1 - Inject One - a very lightweight, convention over
+configuration, dependency injection (inversion of control) framework.
+By default, this plugin uses DI/1 as its Bean Factory. If you wish
+to use something else (e.g., ColdSpring, Mura, etc.), then simply
+edit the Appliction.cfc:setupApplication() method.
+
+Please refer to the [DI/1 Project](https://github.com/seancorfield/di1)
+for more information.
+
 
 ## Additional Resources
 * [MuraFW1 Project Home](http://github.com/stevewithington/MuraFW1)
@@ -88,18 +103,20 @@ content managers.
 * [FW/1 Documentation wiki](http://github.com/seancorfield/fw1/wiki)
 * [FW/1 Blog](http://corfield.org/blog/archives.cfm/category/fw1)
 * [FW/1 Support](http://groups.google.com/group/framework-one/)
+* [DI/1 Project Home](https://github.com/seancorfield/di1)
+* [DI/1 Documentation wiki](https://github.com/seancorfield/di1/wiki)
 
 ## License
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+Copyright (c) 2010-2012 Stephen J. Withington, Jr.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+	http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

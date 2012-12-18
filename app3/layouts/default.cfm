@@ -22,25 +22,26 @@ limitations under the License.
 </cfsilent>
 <cfoutput>
 	<div class="row-fluid">
-		<h3>Application ##2</h3>
+		<h3>Application ##3</h3>
 		<div>
 			<ul class="nav nav-pills">
-				<li<cfif rc.action eq 'app2:main.default'> class="active"</cfif>>
-					<a href="#buildURL('app2:main')#">Application ##2 Main</a>
+				<li<cfif rc.action eq 'app3:main.default'> class="active"</cfif>>
+					<a href="#buildURL('app3:main')#">Registrations</a>
 				</li>
-				<li<cfif rc.action eq 'app2:main.another'> class="active"</cfif>>
-					<a href="#buildURL('app2:main.another')#">Another Page</a>
+				<li<cfif rc.action eq 'app3:main.form'> class="active"</cfif>>
+					<a href="#buildURL('app3:main.form')#">Add Registration</a>
 				</li>
-				<li<cfif rc.action eq 'app2:list.default'> class="active"</cfif>>
-					<a href="#buildURL('app2:list')#">List Something</a>
+				<li<cfif rc.action eq 'app3:main.clear'> class="active"</cfif>>
+					<a href="#buildURL('app3:main.clear')#">Clear All Registrations</a>
 				</li>
 			</ul>
 		</div>
 		<div>#body#</div>
 		<cfif $.currentUser().isSuperUser()>
-			<div class="clearfix">
-				<a href="#rc.$.globalConfig('context')#/plugins/#rc.pc.getDirectory()#/index.cfm?MuraFW1Action=admin:main.default&compactDisplay=true" rel="shadowbox;">Admin</a>
+			<div>
+				<a href="#rc.$.globalConfig('context')#/plugins/#rc.pc.getDirectory()#/index.cfm?#variables.framework.action#=admin:main.default&compactDisplay=true" rel="shadowbox;">Admin</a>
 			</div>
 		</cfif>
+
 	</div>
 </cfoutput>

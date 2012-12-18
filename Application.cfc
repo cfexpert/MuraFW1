@@ -1,24 +1,25 @@
 /*
 
 This file is part of MuraFW1
-(c) Stephen J. Withington, Jr. | www.stephenwithington.com
+Copyright (c) 2010-2012 Stephen J. Withington, Jr.
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+	http://www.apache.org/licenses/LICENSE-2.0
 
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 	NOTES: 
-		The idea is that you shouldn't have to edit this file.
+		Edit the setSessionCache() method to alter the 'expires' key.
+		Defaults to 1 hour. The sessionCache will also expire
+		if the application has been reloaded.
+
 		See /includes/displayObjects.cfc && /includes/eventHandler.cfc
 		on how to access these methods.
 
@@ -33,56 +34,65 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 	variables.fw1Keys = 'SERVICEEXECUTIONCOMPLETE,LAYOUTS,CONTROLLEREXECUTIONCOMPLETE,VIEW,SERVICES,CONTROLLERS,CONTROLLEREXECUTIONSTARTED';
 
 	public string function doAction(string action='') {
+		var p = variables.framework.package; 
+		var fwa = variables.framework.action;
 		var local = {};
+
 		local.targetPath = getPageContext().getRequest().getRequestURI();
-
-		local.fwTriggered = StructKeyExists(form, variables.framework.action) || StructKeyExists(url, variables.framework.action) || StructKeyExists(request, variables.framework.preserveKeyURLKey);
-
-		arguments.action = getFullyQualifiedAction(arguments.action);
-
-		local.action = StructKeyExists(request, variables.framework.action) 
-			? request[variables.framework.action] : arguments.action;
-
 		onApplicationStart();
 
-		request.context[variables.framework.action] = StructKeyExists(form, variables.framework.action) 
-			? form[variables.framework.action] : StructKeyExists(url, variables.framework.action) 
-			? url[variables.framework.action] : local.action;
+		request.context[fwa] = StructKeyExists(form, fwa) 
+			? form[fwa] : StructKeyExists(url, fwa) 
+			? url[fwa] : StructKeyExists(request, fwa)
+			? request[fwa] : getFullyQualifiedAction(arguments.action);
 
-		request.action = getFullyQualifiedAction(request.context[variables.framework.action]);
+		request.action = getFullyQualifiedAction(request.context[fwa]);
 
-		// !important ** DO NOT CHANGE **
-		local.cacheID = UCase(variables.framework.package & '_' & arguments.action);
-		local.cacheExists = !IsNull(CacheGet(local.cacheID));
+		// viewKey: package_subsystem_section_item
+		local.viewKey = UCase(
+			p 
+			& '_' & getSubSystem(arguments.action) 
+			& '_' & getSection(arguments.action)
+			& '_' & getItem(arguments.action)
+		);
 
-		// The main check here is to see if the subsystem is different...
-		// if not, then it should grab the cached state of the application.
-		if (
-			!local.cacheExists
-			|| StructKeyExists(request, variables.framework.reload) 
-				&& request[variables.framework.reload] == variables.framework.password
-			|| ( getSubSystem(arguments.action) == getSubSystem(request.action) && local.fwTriggered )
-		) {
-			CacheRemove(local.cacheID);
+		local.response = getCachedView(local.viewKey);
+
+		local.newViewRequired = !Len(local.response) 
+			? true : getSubSystem(arguments.action) == getSubSystem(request.context[fwa])
+			? true : false;
+
+		if ( local.newViewRequired ) {
 			onRequestStart(local.targetPath);
 			savecontent variable='local.response' {
 				onRequest(local.targetPath);
 			};
 			clearFW1Request();
-			// should probably make the cache timeout settings dynamic
-			CachePut(local.cacheID, local.response, CreateTimeSpan(0,1,0,0), CreateTimeSpan(0,1,0,0));
+			setCachedView(local.viewKey, local.response);
 		};
 
-		return CacheGet(local.cacheID);
+		return local.response;
 	}
 
 	public any function setupApplication() {
 		var local = {};
-		lock scope="application" type="exclusive" timeout="50" {
+
+		lock scope='application' type='exclusive' timeout=50 {
 			application[variables.framework.applicationKey].pluginConfig = application.pluginManager.getConfig(ID=variables.framework.applicationKey);
-			local.pc = application[variables.framework.applicationKey].pluginConfig;
-			setBeanFactory(local.pc.getApplication(purge=false));
 		};
+
+		// Bean Factory Options
+
+		// 1) Use DI/1
+		// just be sure to pass in your comma-separated list of folders to scan for CFCs
+		local.beanFactory = new includes.factory.ioc('/#variables.framework.package#/app2/services,/#variables.framework.package#/app3/model');
+		setBeanFactory( local.beanFactory );
+
+		// OR
+
+		// 2) Use Mura's
+		// local.pc = application[variables.framework.applicationKey].pluginConfig;
+		// setBeanFactory(local.pc.getApplication(purge=false));
 	}
 
 	public void function setupRequest() {
@@ -202,11 +212,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 	}
 
 	public boolean function isAdminRequest() {
-		if ( StructKeyExists(request, 'context') && ListFirst(request.context[variables.framework.action], ':') == 'admin' ) {
-			return true;
-		} else {
-			return false;
-		};
+		return StructKeyExists(request, 'context') && ListFirst(request.context[variables.framework.action], ':') == 'admin' ? true : false;
 	}
 
 	public boolean function isFrontEndRequest() {
@@ -223,6 +229,56 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 				StructDelete(request._fw1, arrFW1Keys[i]);
 			};
 			request._fw1.requestDefaultsInitialized = false;
+		};
+	}
+
+	// ========================== PRIVATE ==============================
+
+	private any function getCachedView(required string viewKey) {
+		var view = '';
+		var cache = getSessionCache();
+		if ( StructKeyExists(cache, 'views') && StructKeyExists(cache.views, arguments.viewKey) ) {
+			view = cache.views[arguments.viewKey];
+		};
+		return view;
+	}
+
+	private void function setCachedView(required string viewKey, string viewValue='') {
+		lock scope='session' type='exclusive' timeout=10 {
+			session[variables.framework.package].views[arguments.viewKey] = arguments.viewValue;
+		};
+	}
+
+	private boolean function isCacheExpired() {
+		var p = variables.framework.package;
+		return !StructKeyExists(session, p) 
+				|| DateCompare(now(), session[p].expires, 's') == 1 
+				|| DateCompare(application.appInitializedTime, session[p].created, 's') == 1
+			? true : false;
+	}
+
+	private any function getSessionCache() {
+		var local = {};
+		if ( isCacheExpired() ) {
+			setSessionCache();
+		};
+		lock scope='session' type='readonly' timeout=10 {
+			local.cache = session[variables.framework.package];
+		};
+		return local.cache;
+	}
+
+	private void function setSessionCache() {
+		var p = variables.framework.package;
+		// Expires - s:seconds, n:minutes, h:hours, d:days
+		lock scope='session' type='exclusive' timeout=10 {
+			StructDelete(session, p);
+			session[p] = {
+				created = Now()
+				, expires = DateAdd('h', 1, Now())
+				, sessionid = Hash(CreateUUID())
+				, views = {}
+			};
 		};
 	}
 

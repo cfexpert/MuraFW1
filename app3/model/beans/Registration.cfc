@@ -18,12 +18,28 @@ limitations under the License.
 	NOTES:
 
 */
-component persistent="false" accessors="true" output="false" extends="controller" {
+component persistent="false" accessors="true" output="false" extends="mura.cfobject" displayname="Registration" {
 
-	// *********************************  PAGES  *******************************************
+	property name='fname';
+	property name='lname';
+	property name='id';
 
-	public any function default(required rc) {
-		// rc.varName = 'whatever';
+	public Registration function init() {
+		return this;
+	}
+
+	/**
+	* getProperties()
+	* Metadata property inspector
+	*/
+	public any function getProperties() {
+		var local = {};
+		local.properties = {};
+		local.data = getMetaData(this).properties;
+		for ( local.i=1; local.i <= ArrayLen(local.data); local.i++ ) {
+			local.properties[local.data[local.i].name] = Evaluate('get#local.data[local.i].name#()');
+		};
+		return local.properties;
 	}
 
 }

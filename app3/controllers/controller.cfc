@@ -16,14 +16,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 	NOTES:
+		All PUBLIC controllers should EXTEND this file.
 
 */
-component persistent="false" accessors="true" output="false" extends="controller" {
+component persistent="false" accessors="true" output="false" extends="mura.cfobject" {
+		
+		property name="fw" type="any" default="";
 
-	// *********************************  PAGES  *******************************************
+		public any function init(required any fw) {
+			setFW(arguments.fw);
+			return this;
+		}
 
-	public any function default(required rc) {
-		// rc.varName = 'whatever';
-	}
+		public any function before(required struct rc) {
+			if ( !getFW().isFrontEndRequest() ) {
+				getFW().redirect(action='admin:main.default');
+			};
+		}
 
 }
