@@ -120,7 +120,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		};
 
 		if ( !StructKeyExists(request.context, '$') ) {
-			request.context.$ = application.serviceFactory.getBean('muraScope').init(session.siteid);
+			request.context.$ = StructKeyExists(request, 'muraScope') ? request.muraScope : application.serviceFactory.getBean('muraScope').init(session.siteid);
 		};
 
 		request.context.pc = application[variables.framework.applicationKey].pluginConfig;
@@ -231,7 +231,14 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 			for ( i=1; i <= ArrayLen(arrFW1Keys); i++ ) {
 				StructDelete(request._fw1, arrFW1Keys[i]);
 			};
-			request._fw1.requestDefaultsInitialized = false;
+			request._fw1 = {
+				cgiScriptName = CGI.SCRIPT_NAME
+				, cgiRequestMethod = CGI.REQUEST_METHOD
+				, controllers = []
+				, requestDefaultsInitialized = false
+				, services = []
+				, trace = []
+			};
 		};
 	}
 
