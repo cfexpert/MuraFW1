@@ -2,7 +2,7 @@
 
 This file is part of MuraFW1
 
-Copyright 2010-2013 Stephen J. Withington, Jr.
+Copyright 2010-2014 Stephen J. Withington, Jr.
 Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
 
@@ -16,6 +16,9 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	// Add any other Mura CMS Specific methods you need here.
 
 	public void function onApplicationLoad(required struct $) {
+		// trigger MuraFW1 setupApplication()
+		new '#variables.framework.package#.Application'();
+		// register this file as a Mura eventHandler
 		variables.pluginConfig.addEventHandler(this);
 	}
 	
