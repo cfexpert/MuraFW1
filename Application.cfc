@@ -2,7 +2,7 @@
 
 This file is part of MuraFW1
 
-Copyright 2010-2013 Stephen J. Withington, Jr.
+Copyright 2010-2014 Stephen J. Withington, Jr.
 Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
 
@@ -30,7 +30,15 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		var local = {};
 
 		local.targetPath = getPageContext().getRequest().getRequestURI();
-		onApplicationStart();
+
+		setupFrameworkDefaults();
+		setupRequestDefaults();
+
+		if ( !isFrameworkInitialized() || isFrameworkReloadRequest() ) {
+			setupApplicationWrapper();
+		}
+
+		restoreFlashContext();
 
 		request.context[fwa] = StructKeyExists(form, fwa) 
 			? form[fwa] : StructKeyExists(url, fwa) 
@@ -153,7 +161,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		};
 	}
 
-	public string function buildURL(required string action, string path='#variables.framework.baseURL#', string queryString='') {
+	public string function buildURL(required string action, string path='#variables.framework.baseURL#', any queryString='') {
 		var regx = '&?compactDisplay=[true|false]';
 		arguments.action = getFullyQualifiedAction(arguments.action);
 		if (
@@ -164,7 +172,11 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		) {
 			var qs = 'compactDisplay=' & request.context.compactDisplay;
 			if ( !Find('?', arguments.action) ) {
-				arguments.queryString = ListAppend(arguments.queryString, qs, '&');
+				if ( isSimpleValue(arguments.queryString) ) {
+					arguments.queryString = ListAppend(arguments.queryString, qs, '&');
+				} else if ( isStruct(arguments.queryString) ) {
+					structAppend(arguments.queryString, {"compactDisplay"=request.context.compactDisplay} );
+				}
 			} else {
 				arguments.action = ListAppend(arguments.action, qs, '&');
 			};
