@@ -1,15 +1,11 @@
 # MuraFW1
--------------------------------------------------------------------------------
 
-## Introduction
-This is a base Mura CMS plugin using FW/1 as its application 
-framework.  It's intended to be used by experienced 
-ColdFusion/CFML developers and those developers familiar with 
-Framework One, or more commonly known as FW/1.
-
+This is a base Mura CMS plugin using [FW/1 - Framework One](https://github.com/framework-one/fw1) 
+as its application framework. It's intended to be used by experienced 
+ColdFusion/CFML developers and those developers familiar with Framework One, 
+or more commonly known as FW/1.
 
 ## PLEASE READ
-**As of version 3.010, this project is licensed under Apache License, Version 2.0**
 
 ### Minimum Requirements
 	* Mura CMS v.6.0+
@@ -47,7 +43,7 @@ This file contains 'variables.framework' which is used by both
 FW/1 and Mura. The most important variable in this file is: 
 `variables.framework.package = 'MuraFW1';` You **MUST** enter 
 the plugin's 'packageName' here and it MUST be the same as found 
-in **/plugin/config.xml.cfm**  So please be sure to change 
+in **/plugin/config.xml.cfm** So please be sure to change 
 **MuraFW1** to match your plugin's packageName. You should be 
 able to simply modify the *package* name in this file and the 
 setting should populate `config.xml.cfm` when the plugin is deployed.
@@ -59,7 +55,7 @@ for Mura CMS and FW/1 to coexist.
 Lastly, the `variables.framework.action` defaults to your 
 `pacakgeName & action` ... e.g. if your packageName is 'MuraFW1', 
 the default action will be **MuraFW1action**.  This is to help 
-prevent your plugin from intercepting another plugin's action.  
+prevent your plugin from intercepting another plugin's action. 
 So, if your packageName is not a valid CFML variable name 
 (e.g., begins with a number, etc.) then you will experience 
 problems trying to get your application to work.
@@ -71,40 +67,41 @@ setupRequest(), setupSubsystem() if needed. The hope is that you
 shouldn't have to modify it very much for simple applications.
 
 ### /includes/eventHandler.cfc
-This file extends `mura.plugin.pluginGenericEventHandler`.  Here is 
+This file extends `mura.plugin.pluginGenericEventHandler`. Here is 
 where you can modify/add commonly used Mura 'events' such as 
 onApplicationLoad(), onSiteRequestStart(), onRenderStart(), etc.
 
 ### /includes/displayObjects.cfc
-This file extends `mura.plugin.pluginGenericEventHandler`.  You 
-should be able to add any display methods here.  Just be sure sure 
+This file extends `mura.plugin.pluginGenericEventHandler`. You 
+should be able to add any display methods here. Just be sure sure 
 to map them into your `config.xml.cfm` file so they'll show up for 
 content managers.
 
 ### /includes/factory/ioc.cfc
-This file is DI/1 - Inject One - a very lightweight, convention over
+This file is [DI/1 - Inject One](https://github.com/framework-one/di1) - a very lightweight, convention over
 configuration, dependency injection (inversion of control) framework.
 By default, this plugin uses DI/1 as its Bean Factory. If you wish
 to use something else (e.g., ColdSpring, Mura, etc.), then simply
-edit the Appliction.cfc:setupApplication() method.
+edit the Application.cfc:setupApplication() method.
 
-Please refer to the [DI/1 Project](https://github.com/seancorfield/di1)
+Please refer to the [DI/1 Project](https://github.com/framework-one/di1)
 for more information.
 
 
 ## Additional Resources
-* [MuraFW1 Project Home](http://github.com/stevewithington/MuraFW1)
+* [MuraFW1 Project Source Code](http://github.com/stevewithington/MuraFW1)
 * [Mura CMS Project Home](http://www.getmura.com)
-* [Mura CMS Github Project](http://github.com/blueriver/MuraCMS.git)
-* [Mura Support](http://www.getmura.com/index.cfm/support/)
-* [Mura Blog](http://www.getmura.com/index.cfm/blog/)
-* [Mura Forum](http://www.getmura.com/forum/)
+* [Mura CMS Project Source Code](http://github.com/blueriver/MuraCMS)
+* [Mura CMS Support](http://www.getmura.com/support/)
+* [Mura CMS Blog](http://www.getmura.com/blog/)
+* [Mura CMS Forum/Google Group](https://groups.google.com/group/mura-cms-developers)
 * [FW/1 Project Home](http://fw1.riaforge.org)
-* [FW/1 Documentation wiki](http://github.com/seancorfield/fw1/wiki)
+* [FW/1 Project Source Code](https://github.com/framework-one/fw1)
+* [FW/1 Documentation wiki](https://github.com/framework-one/fw1/wiki)
 * [FW/1 Blog](http://corfield.org/blog/archives.cfm/category/fw1)
-* [FW/1 Support](http://groups.google.com/group/framework-one/)
-* [DI/1 Project Home](https://github.com/seancorfield/di1)
-* [DI/1 Documentation wiki](https://github.com/seancorfield/di1/wiki)
+* [FW/1 Forum/Google Group](http://groups.google.com/group/framework-one/)
+* [DI/1 Project Home](https://github.com/framework-one/di1)
+* [DI/1 Documentation wiki](https://github.com/framework-one/di1/wiki)
 
 ## License
 Copyright 2010-2014 Stephen J. Withington, Jr.
