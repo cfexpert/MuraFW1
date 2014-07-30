@@ -13,6 +13,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 component persistent="false" accessors="true" output="false" extends="mura.cfobject" {
 		
 		property name="fw" type="any" default="";
+		property name="sampleService"; // used by list.cfc and main.cfc (you may want to place the property for the service directly inside those instead)
+		//property name="beanFactory"; // use if you need access to the beanFactory
 
 		public any function init(required any fw) {
 			setFW(arguments.fw);
