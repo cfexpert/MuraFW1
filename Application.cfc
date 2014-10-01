@@ -29,6 +29,8 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		var fwa = variables.framework.action;
 		var local = {};
 
+		clearFW1Request();
+
 		local.targetPath = getPageContext().getRequest().getRequestURI();
 
 		setupFrameworkDefaults();
@@ -173,7 +175,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		}
 	}
 
-	public string function buildURL(required string action, string path='#variables.framework.baseURL#', any queryString='') {
+	public string function buildURL(required string action, string path='#resolvePath()#', any queryString='') {
 		var regx = '&?compactDisplay=[true|false]';
 		arguments.action = getFullyQualifiedAction(arguments.action);
 		if (
@@ -193,7 +195,29 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 				arguments.action = ListAppend(arguments.action, qs, '&');
 			}
 		}
+
 		return super.buildURL(argumentCollection=arguments);
+	}
+
+	public any function resolvePath(string path='#variables.framework.baseURL#') {
+		// don't modify a submitted path
+		if ( arguments.path != variables.framework.baseURL ) {
+			return arguments.path;
+		}
+
+		var uri =  getPageContext().getRequest().getRequestURI();
+		var arrURI = ListToArray(uri, '/');
+		var useIndex = YesNoFormat(application.configBean.getValue('indexfileinurls'));
+		var useSiteID = YesNoFormat(application.configBean.getValue('siteidinurls'));
+
+		if ( useSiteID && !useIndex ) {
+			ArrayDeleteAt(arrURI, 2);
+			uri = '/' & ArrayToList(arrURI, '/') & '/';
+		}
+
+		return !useSiteID && !useIndex
+			? '/' & ListRest(uri, '/')
+			: uri;
 	}
 
 	public any function isFrameworkInitialized() {
@@ -262,17 +286,17 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		if ( StructKeyExists(request, '_fw1') ) {
 			for ( i=1; i <= ArrayLen(arrFW1Keys); i++ ) {
 				StructDelete(request._fw1, arrFW1Keys[i]);
-			};
-			request._fw1 = {
-				cgiScriptName = CGI.SCRIPT_NAME
-				, cgiRequestMethod = CGI.REQUEST_METHOD
-				, controllers = []
-				, requestDefaultsInitialized = false
-				, services = []
-				, doTrace = false
-				, trace = []
-			};
+			}
 		}
+		request._fw1 = {
+			cgiScriptName = CGI.SCRIPT_NAME
+			, cgiRequestMethod = CGI.REQUEST_METHOD
+			, controllers = []
+			, requestDefaultsInitialized = false
+			, services = []
+			, doTrace = variables.framework.trace
+			, trace = []
+		};
 	}
 
 	// ========================== PRIVATE ==============================
