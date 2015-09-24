@@ -94,10 +94,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		}
 
 		lock scope='application' type='exclusive' timeout=20 {
-			if ( !StructKeyExists(application, variables.framework.applicationKey)  ){
-				application[variables.framework.applicationKey] = {};
-			}
-			application[variables.framework.applicationKey].pluginConfig = application.pluginManager.getConfig(ID=variables.framework.applicationKey);
+			getFw1App().pluginConfig = application.pluginManager.getConfig(ID=variables.framework.applicationKey);
 		};
 
 		// Bean Factory (uses DI/1)
@@ -147,11 +144,11 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 			request.context.$ = StructKeyExists(request, 'muraScope') ? request.muraScope : application.serviceFactory.getBean('muraScope').init(session.siteid);
 		}
 
-		request.context.pc = application[variables.framework.applicationKey].pluginConfig;
-		request.context.pluginConfig = application[variables.framework.applicationKey].pluginConfig;
+		request.context.pc = getFw1App().pluginConfig;
+		request.context.pluginConfig = getFw1App().pluginConfig;
 		request.context.action = request.context[variables.framework.action];
 	}
-	
+
 	public void function setupView() {
 		var httpRequestData = GetHTTPRequestData();
 		if ( 
@@ -175,6 +172,14 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 			WriteOutput(SerializeJSON(request.context));
 			abort;
 		}
+	}
+
+	public void function setupSession() {
+		include '../../config/appcfc/onSessionStart_include.cfm';
+	}
+
+	public void function onSessionEnd() {
+		include '../../config/appcfc/onSessionEnd_include.cfm';
 	}
 
 	public string function buildURL(required string action, string path='#resolvePath()#', any queryString='') {
@@ -219,16 +224,17 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 
 		if ( !useIndex && indexPos ) {
 			ArrayDeleteAt(arrURI, indexPos);
-			uri = '/' & ArrayToList(arrURI, '/') & '/';
+			uri = ArrayLen(arrURI)
+				? '/' & ArrayToList(arrURI, '/') & '/'
+				: '/';
 		}
 
 		return uri;
 	}
 
 	public any function isFrameworkInitialized() {
-		return super.isFrameworkInitialized() && StructKeyExists(application[variables.framework.applicationKey], 'cache');
+		return super.isFrameworkInitialized() && StructKeyExists(getFw1App(), 'cache');
 	}
-
 	
 	// ========================== Errors & Missing Views ==========================
 
@@ -267,7 +273,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 			return !isAdminRequest() || (StructKeyExists(session, 'mura') && ListFindNoCase(session.mura.memberships,'S2')) ? true :
 					!StructKeyExists(session, 'mura') 
 					|| !StructKeyExists(session, 'siteid') 
-					|| !application.permUtility.getModulePerm(application[variables.framework.applicationKey].pluginConfig.getModuleID(), session.siteid) 
+					|| !application.permUtility.getModulePerm(getFw1App().pluginConfig.getModuleID(), session.siteid) 
 						? goToLogin() : true;
 		}
 
@@ -295,6 +301,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 			}
 			request._fw1 = {
 				cgiScriptName = CGI.SCRIPT_NAME
+				, cgiPathInfo = CGI.PATH_INFO
 				, cgiRequestMethod = CGI.REQUEST_METHOD
 				, controllers = []
 				, requestDefaultsInitialized = false
