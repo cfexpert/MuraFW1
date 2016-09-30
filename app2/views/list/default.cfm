@@ -26,7 +26,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 	<!--- Some form testing --->
 	<div class="row">
 		<div class="col-md-6">
-			<form method="post" role="form">
+			<form method="post" action="#$.getURL()#" role="form">
 				<div class="form-group">
 					<label for="action">Action</label>
 					<!--- NOTE the 'name' attribute! --->

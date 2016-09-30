@@ -28,6 +28,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 .container-murafw1 .navbar-murafw1, .mura #cPlugins .container-murafw1 .navbar-murafw1 {
 	margin-bottom: 1.5em;
 }
+
+.navbar-murafw1 {
+	margin-right: 40px;
+}
 .container-murafw1 .navbar .plugin-brand:hover  {
 	text-decoration: none;
 	text-shadow: 0 1px 0 rgba(255,255,255,.1), 0 0 30px rgba(255,255,255,.4);

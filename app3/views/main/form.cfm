@@ -17,7 +17,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 	<div class="row">
 		<div class="col-md-6">
 			<h4>Add Registration</h4>
-			<form role="form" method="post">
+			<form role="form" action="#$.getURL()#" method="post">
 				<div class="form-group">
 					<label for="fname">First Name</label>
 					<input type="text" class="form-control" name="fname" value="#HTMLEditFormat(local.registration.getFName())#" />
